@@ -3,12 +3,14 @@
 const Project = require('../models/Project')
 const Client = require('../models/Client')
 
-const{ GraphQLObjectType, 
+const{ 
+    GraphQLObjectType, 
     GraphQLID, 
     GraphQLString, 
     GraphQLSchema, 
     GraphQLList, 
-    GraphQLNonNull} = require('graphql')
+    GraphQLNonNull
+} = require('graphql')
 
 //client type
 
@@ -84,9 +86,9 @@ const mutation = new GraphQLObjectType({
         addClient:{
             type: ClientType,
             args:{
-                name: {type: GraphQLNonNull(GraphQLString)},
-                email: {type:GraphQLNonNull(GraphQLString)},
-                phone: {type:GraphQLNonNull(GraphQLString)},
+                name: { type: GraphQLNonNull(GraphQLString) },
+                email: { type: GraphQLNonNull(GraphQLString) },
+                phone: { type: GraphQLNonNull(GraphQLString) },
             },
             resolve(parent, args) {//taking args from above adding to fields and then saving.
                 const client = new Client({
@@ -95,7 +97,18 @@ const mutation = new GraphQLObjectType({
                     phone: args.phone,
                 });
                 return client.save();
-            }
+            },
+        },
+        //Delete client
+        deleteClient:{
+            type: ClientType,
+            args: {
+                id: {type: GraphQLNonNull(GraphQLID)},
+            },
+                resolve(parent, args) {
+                    return Client.findByIdAndRemove(args.id)
+                }
+            
         }
     }
 })
